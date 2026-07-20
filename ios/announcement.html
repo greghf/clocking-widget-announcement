@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>New: Clocking Widget</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --brand-dark: #1B214D;
+    --brand-mid: #2D3296;
+    --primary-00: #EAF2FB;
+    --primary-20: #B0D0FC;
+    --neutral-black: #000000;
+    --neutral-darkest-grey: #525252;
+    --neutral-dark-grey: #737373;
+    --neutral-light-grey: #DADADA;
+    --neutral-white: #FFFFFF;
+    --accent-30: #FFD540;
+  }
+  html, body {
+    font-family: 'Lato', sans-serif;
+    background: var(--neutral-white);
+    color: var(--neutral-black);
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    max-width: 390px;
+    margin: 0 auto;
+    padding: 28px 28px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .close-btn {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--neutral-dark-grey);
+    line-height: 1;
+  }
+  .hero {
+    margin: 20px 0 20px;
+    position: relative;
+    width: 100%;
+  }
+  .hero-bg {
+    width: 100%;
+    border-radius: 20px;
+    background: transparent;
+    padding: 14px;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  .widget-preview {
+    width: 100%;
+    background: linear-gradient(to right, #50b848, #245a20);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.22);
+  }
+  .widget-content-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 10px 10px 12px;
+    gap: 8px;
+  }
+  .widget-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .widget-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 100px;
+    padding: 3px 8px 3px 6px;
+    align-self: flex-start;
+  }
+  .widget-badge-icon { display: flex; align-items: center; }
+  .widget-badge-label {
+    font-size: 7.5px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.7px;
+    white-space: nowrap;
+  }
+  .widget-time {
+    font-size: 26px;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+    letter-spacing: -0.5px;
+  }
+  .widget-ends {
+    font-size: 8.5px;
+    color: white;
+    font-weight: 500;
+    opacity: 0.9;
+  }
+  .widget-actions {
+    display: flex;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+  .widget-action {
+    width: 58px;
+    height: 74px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .widget-action.break {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+  }
+  .widget-action.finish {
+    background: white;
+  }
+  .widget-action-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+  }
+  .widget-action.break .widget-action-label { color: white; }
+  .widget-action.finish .widget-action-label { color: #194017; }
+  .widget-footer {
+    background: #245a20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px 7px 12px;
+  }
+  .widget-footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .widget-footer-logo { height: 8px; width: auto; max-width: 70px; opacity: 0.9; }
+  .widget-footer-divider {
+    width: 1px;
+    height: 10px;
+    background: rgba(255,255,255,0.4);
+  }
+  .widget-footer-location {
+    font-size: 8.5px;
+    color: white;
+    font-weight: 500;
+  }
+  .widget-footer-sync {
+    font-size: 7.5px;
+    color: rgba(255,255,255,0.7);
+  }
+  .badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: var(--accent-30);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-00);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .new-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--accent-30);
+    color: var(--brand-dark);
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border-radius: 100px;
+    padding: 4px 12px;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--brand-dark);
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+    max-width: 240px;
+  }
+  .subtitle {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    color: var(--neutral-darkest-grey);
+    text-align: center;
+    line-height: 1.5;
+    margin-bottom: 28px;
+    max-width: 240px;
+  }
+  .how-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--neutral-dark-grey);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    align-self: flex-start;
+    width: 100%;
+    max-width: 300px;
+  }
+  .steps {
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary-00);
+    color: var(--brand-mid);
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-text {
+    font-size: 15px;
+    color: var(--neutral-darkest-grey);
+    line-height: 1.4;
+  }
+  .step-text strong {
+    font-weight: 700;
+    color: var(--neutral-black);
+  }
+  .cta-btn {
+    width: 100%;
+    max-width: 300px;
+    background: var(--brand-mid);
+    color: var(--neutral-white);
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <button class="close-btn" onclick="dismiss()" aria-label="Close">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
+  <div class="hero">
+    <div class="hero-bg">
+      <div class="widget-preview">
+        <div class="widget-content-row">
+          <div class="widget-left">
+            <div class="widget-badge">
+              <div class="widget-badge-icon">
+                <img src="https://www.figma.com/api/mcp/asset/36b2957b-e860-44b7-ad28-d16516bfcc90" width="8" height="9" alt="">
+              </div>
+              <span class="widget-badge-label">CLOCKED IN</span>
+            </div>
+            <div class="widget-time">8h 13m</div>
+            <div class="widget-ends">Ends Sun Sep 13 · 5:30 AM</div>
+          </div>
+          <div class="widget-actions">
+            <div class="widget-action break">
+              <img src="https://www.figma.com/api/mcp/asset/000204bd-ab64-4495-8c44-7fa4d9ac9674" width="24" height="17" alt="">
+              <span class="widget-action-label">Break</span>
+            </div>
+            <div class="widget-action finish">
+              <img src="https://www.figma.com/api/mcp/asset/6d8d25f5-0b79-418c-9622-190c0f3e5c66" width="17" height="19" alt="">
+              <span class="widget-action-label">Finish</span>
+            </div>
+          </div>
+        </div>
+        <div class="widget-footer">
+          <div class="widget-footer-brand">
+            <img src="https://www.figma.com/api/mcp/asset/4f941c3d-1a76-44e2-a048-a16582eb5f75" class="widget-footer-logo" alt="humanforce">
+            <div class="widget-footer-divider"></div>
+            <span class="widget-footer-location">ACME Corp</span>
+          </div>
+          <span class="widget-footer-sync">Synced 5 mins ago</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="new-badge">✦ New</div>
+  <h1>Clocking Widget</h1>
+  <p class="subtitle">Check your next shift and clock in right from your iPhone's home screen.</p>
+
+  <div class="how-label">How to add it</div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">Long-press your phone's home screen</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">Tap <strong>Edit</strong> → <strong>Add Widget</strong></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">Search <strong>Humanforce</strong>, choose a size</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text">Tap <strong>Add Widget</strong></div>
+    </div>
+  </div>
+
+  <button class="cta-btn" onclick="dismiss()">Got it</button>
+
+</div>
+<script>
+  function dismiss() {
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.dismissAnnouncement) {
+      window.webkit.messageHandlers.dismissAnnouncement.postMessage('widget_announcement_v1');
+    } else {
+      document.body.style.opacity = '0';
+      document.body.style.transition = 'opacity 0.2s';
+    }
+  }
+</script>
+</body>
+</html>
